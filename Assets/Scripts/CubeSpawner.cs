@@ -2,23 +2,26 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(LifeTimeRandomizer), typeof(LifeTimeRandomizer), typeof(ColorRandomizer))]
-[RequireComponent (typeof(ObjectPool<>))]
+[RequireComponent (typeof(ObjectPool<>), typeof(CubeCounter))]
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private Floor _floor;
     [SerializeField] private float _offsetY;
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private float _timeBetweenCreation;
+    [SerializeField] private BombSpawner _bombSpawner;
 
     private Coroutine _createNewCubeCoroutine;
     private ColorRandomizer _colorRandomizer;
     private LifeTimeRandomizer _lifeTimeRandomizer;
     private CubePool _cubePool;
+    private CubeCounter _cubeCounter;
         
     private void Start()
     {
         _colorRandomizer = GetComponent<ColorRandomizer>();
         _lifeTimeRandomizer = GetComponent<LifeTimeRandomizer>();
+        _cubeCounter = GetComponent<CubeCounter>();
         _cubePool = GetComponent<CubePool>();
 
         _createNewCubeCoroutine = StartCoroutine(TurnCubeOn());
@@ -59,13 +62,20 @@ public class CubeSpawner : MonoBehaviour
 
             yield return new WaitForSeconds(_timeBetweenCreation);
 
-            Cube newCube = _cubePool.RetrieveObject();
-            newCube.transform.position = GetSpawnPosition();
-            newCube.transform.rotation = CubeRotation();
-            newCube.gameObject.SetActive(true);
+            if (_cubePool.RetrieveObject() != null)
+            {
+                Cube newCube = _cubePool.RetrieveObject();
+                newCube.transform.position = GetSpawnPosition();
+                newCube.transform.rotation = CubeRotation();
+                newCube.gameObject.SetActive(true);
 
-            newCube.GetComponent<ColorChanger>().SetNewColor(color);
-            newCube.GetComponent<SelfDestroyer>().SetLifeTime(lifeTime);
+                newCube.GetComponent<ColorChanger>().SetNewColor(color);
+                newCube.GetComponent<SelfDestroyer>().SetLifeTime(lifeTime);
+
+                _cubeCounter.ChangedCount();
+
+                _bombSpawner.GetEvent(newCube.GetComponent<SelfDestroyer>());
+            }
         }
     }
 

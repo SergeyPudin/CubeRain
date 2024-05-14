@@ -1,11 +1,14 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SelfDestroyer : MonoBehaviour
 {
     private float _lifeTime;
     private bool _isCountdowned;
     private Coroutine _dieCoroutine;
+
+    public event UnityAction<Vector3, float> Destroyed;
 
     private void Start()
     {
@@ -40,6 +43,8 @@ public class SelfDestroyer : MonoBehaviour
             yield return waitForSeconds;
 
             gameObject.SetActive(false);
+
+            Destroyed?.Invoke(transform.position, _lifeTime);
         }
     }
 }
