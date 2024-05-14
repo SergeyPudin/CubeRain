@@ -39,7 +39,7 @@ public class SelfDestroyer : MonoBehaviour
         {
             yield return waitForSeconds;
 
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

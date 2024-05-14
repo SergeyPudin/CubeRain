@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(LifeTimeRandomizer), typeof(LifeTimeRandomizer), typeof(ColorRandomizer))]
-
+[RequireComponent (typeof(ObjectPool<>))]
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private Floor _floor;
@@ -13,13 +13,15 @@ public class CubeSpawner : MonoBehaviour
     private Coroutine _createNewCubeCoroutine;
     private ColorRandomizer _colorRandomizer;
     private LifeTimeRandomizer _lifeTimeRandomizer;
-
+    private CubePool _cubePool;
+        
     private void Start()
     {
         _colorRandomizer = GetComponent<ColorRandomizer>();
         _lifeTimeRandomizer = GetComponent<LifeTimeRandomizer>();
+        _cubePool = GetComponent<CubePool>();
 
-        _createNewCubeCoroutine = StartCoroutine(CreateNewCube());
+        _createNewCubeCoroutine = StartCoroutine(TurnCubeOn());
     }
 
     private void OnDisable()
@@ -48,7 +50,7 @@ public class CubeSpawner : MonoBehaviour
         return new Vector3(positionX, positionY, positionZ);
     }
 
-    private IEnumerator CreateNewCube()
+    private IEnumerator TurnCubeOn()
     {
         while (true)
         {
@@ -57,7 +59,11 @@ public class CubeSpawner : MonoBehaviour
 
             yield return new WaitForSeconds(_timeBetweenCreation);
 
-            Cube newCube = Instantiate(_cubePrefab, GetSpawnPosition(), CubeRotation());
+            Cube newCube = _cubePool.RetrieveObject();
+            newCube.transform.position = GetSpawnPosition();
+            newCube.transform.rotation = CubeRotation();
+            newCube.gameObject.SetActive(true);
+
             newCube.GetComponent<ColorChanger>().SetNewColor(color);
             newCube.GetComponent<SelfDestroyer>().SetLifeTime(lifeTime);
         }
