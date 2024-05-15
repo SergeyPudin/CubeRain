@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
 {
     [SerializeField] private T _prefab;
-    [SerializeField] private int _quantity;
+    [SerializeField] private int _objectsQuantity;
     [SerializeField] private Transform _parent;
 
     private int _quantityActiveObjects;
@@ -40,7 +40,7 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
 
     private void Initialize()
     {
-        for (int i = 0; i < _quantity; i++)
+        for (int i = 0; i < _objectsQuantity; i++)
         {
             T newObject = Instantiate(_prefab, transform.position, Quaternion.identity, _parent);
             newObject.gameObject.SetActive(false);

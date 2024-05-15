@@ -70,11 +70,11 @@ public class CubeSpawner : MonoBehaviour
                 newCube.gameObject.SetActive(true);
 
                 newCube.GetComponent<ColorChanger>().SetNewColor(color);
-                newCube.GetComponent<SelfDestroyer>().SetLifeTime(lifeTime);
+                newCube.GetComponent<CubeSelfDestroyer>().SetLifeTime(lifeTime);
 
                 _cubeCounter.ChangedCount();
 
-                _bombSpawner.GetEvent(newCube.GetComponent<SelfDestroyer>());
+                _bombSpawner.GetEvent(newCube.GetComponent<CubeSelfDestroyer>());
             }
         }
     }

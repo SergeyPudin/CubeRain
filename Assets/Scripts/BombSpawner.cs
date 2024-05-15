@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class BombSpawner : MonoBehaviour
 {
     private BombPool _pool;
-    private Queue<SelfDestroyer> _destroyerQueue = new Queue<SelfDestroyer>();
+    private Queue<CubeSelfDestroyer> _destroyerQueue; 
     private BombCounter _counter;   
 
     public event UnityAction BombCreated;
@@ -15,12 +15,14 @@ public class BombSpawner : MonoBehaviour
     {
         _pool = GetComponent<BombPool>();
         _counter = GetComponent<BombCounter>();
+
+        _destroyerQueue = new Queue<CubeSelfDestroyer>();
     }
 
-    public void GetEvent(SelfDestroyer destroyer)
+    public void GetEvent(CubeSelfDestroyer destroyer)
     {
         _destroyerQueue.Enqueue(destroyer);
-        destroyer.Destroyed += CreateBomb;
+        destroyer.CubeDestroyed += CreateBomb;
     }
 
     private void CreateBomb(Vector3 position, float lifeTime)
@@ -30,7 +32,7 @@ public class BombSpawner : MonoBehaviour
             Bomb bomb = _pool.RetrieveObject();
             bomb.transform.position = position;
             bomb.gameObject.SetActive(true);
-            bomb.GetLifeTime(lifeTime);
+            bomb.gameObject.GetComponent<BombSelfDestroyer>().GetLifeTime(lifeTime);
 
             _counter.ChangedCount();
 
@@ -38,8 +40,8 @@ public class BombSpawner : MonoBehaviour
 
             if (_destroyerQueue.Count > 0)
             {
-                SelfDestroyer destroyer = _destroyerQueue.Dequeue();
-                destroyer.Destroyed -= CreateBomb;
+                CubeSelfDestroyer destroyer = _destroyerQueue.Dequeue();
+                destroyer.CubeDestroyed -= CreateBomb;
             }
         }
     }

@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
-public class BombColorChanger : MonoBehaviour
+public class AlphaChanger : MonoBehaviour
 {
     private MeshRenderer _renderer;
 
@@ -11,29 +11,19 @@ public class BombColorChanger : MonoBehaviour
         _renderer = GetComponent<MeshRenderer>();          
     }
 
-    private void OnEnable()
-    {
-        ResetAlpha();
-    }
-
-    private void OnDisable()
-    {
-        ResetAlpha();
-    }
-
     public void ChangeAlpha(float lifeTime)
     {
-        float alphaValue = 0.0f;
+        float minAlphaValue = 0.0f;
 
-        _renderer.material.DOFade(alphaValue, lifeTime);
+        _renderer.material.DOFade(minAlphaValue, lifeTime);
     }
 
     public void ResetAlpha()
     {
-        float alphaValue = 1.0f;
+        float maxAlphaValue = 1.0f;
         Color color = _renderer.material.color;
 
-        color.a = alphaValue;
+        color.a = maxAlphaValue;
         _renderer.material.color = color;
     }
 }

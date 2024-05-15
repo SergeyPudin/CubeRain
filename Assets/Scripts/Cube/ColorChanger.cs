@@ -9,8 +9,6 @@ public class ColorChanger : MonoBehaviour
     private Color _newColor;
     private bool _isColorChanged;
 
-    public Color DefaultColor => _defaultColor;
-
     private void OnEnable()
     {
         _isColorChanged = false;
@@ -36,6 +34,7 @@ public class ColorChanger : MonoBehaviour
 
     public void SetNewColor(Color color)
     {
-        _newColor = color;
+        if (color != null)
+            _newColor = color;
     }
 }

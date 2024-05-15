@@ -2,13 +2,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SelfDestroyer : MonoBehaviour
+public class CubeSelfDestroyer : MonoBehaviour
 {
     private float _lifeTime;
     private bool _isCountdowned;
     private Coroutine _dieCoroutine;
 
-    public event UnityAction<Vector3, float> Destroyed;
+    public event UnityAction<Vector3, float> CubeDestroyed;
 
     private void Start()
     {
@@ -44,7 +44,7 @@ public class SelfDestroyer : MonoBehaviour
 
             gameObject.SetActive(false);
 
-            Destroyed?.Invoke(transform.position, _lifeTime);
+            CubeDestroyed?.Invoke(transform.position, _lifeTime);
         }
     }
 }
