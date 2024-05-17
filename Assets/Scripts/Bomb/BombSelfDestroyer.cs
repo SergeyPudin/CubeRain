@@ -1,24 +1,24 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(AlphaChanger))]
-public class BombSelfDestroyer : MonoBehaviour 
+[RequireComponent(typeof(AlphaReducer))]
+public class BombSelfDestroyer : MonoBehaviour
 {
     [SerializeField] private float _explosionRadius;
     [SerializeField] private float _explosionForce;
     [SerializeField] private ParticleSystem _fXPrefab;
 
+    private AlphaReducer _alphaReducer;
     private Coroutine _dieCoroutine;
-    private AlphaChanger _alphaChanger;
 
     private void Awake()
     {
-        _alphaChanger = GetComponent<AlphaChanger>();
+        _alphaReducer = GetComponent<AlphaReducer>();
     }
 
     public void GetLifeTime(float lifeTime)
     {
-        _alphaChanger.ChangeAlpha(lifeTime);
+        _alphaReducer.ReduceAlpha(lifeTime);
         _dieCoroutine = StartCoroutine(Die(lifeTime));
     }
 
@@ -29,11 +29,11 @@ public class BombSelfDestroyer : MonoBehaviour
         yield return waitForSeconds;
 
         gameObject.SetActive(false);
-        _alphaChanger.ResetAlpha();
+        _alphaReducer.ResetAlpha();
 
         Explode();
 
-        _dieCoroutine = null; 
+        StopCoroutine(_dieCoroutine);
     }
 
     private void Explode()

@@ -1,22 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-[RequireComponent(typeof(BombPool), typeof(BombCounter))]
-public class BombSpawner : MonoBehaviour
+public class BombSpawner : ObjectPool<Bomb>
 {
-    private BombPool _pool;
-    private Queue<CubeSelfDestroyer> _destroyerQueue; 
-    private BombCounter _counter;   
+    [SerializeField] private Bomb _bombPrefab;
+    [SerializeField] private BombTotalCounter _counter;
 
-    public event UnityAction BombCreated;
+    private Queue<CubeSelfDestroyer> _destroyerQueue;
 
     private void Start()
     {
-        _pool = GetComponent<BombPool>();
-        _counter = GetComponent<BombCounter>();
-
         _destroyerQueue = new Queue<CubeSelfDestroyer>();
+
+        InitializePool(_bombPrefab);
     }
 
     public void GetEvent(CubeSelfDestroyer destroyer)
@@ -27,16 +23,14 @@ public class BombSpawner : MonoBehaviour
 
     private void CreateBomb(Vector3 position, float lifeTime)
     {
-        if (_pool.RetrieveObject() != null)
+        if (RetrieveObject() != null)
         {
-            Bomb bomb = _pool.RetrieveObject();
+            Bomb bomb = RetrieveObject();
             bomb.transform.position = position;
             bomb.gameObject.SetActive(true);
             bomb.gameObject.GetComponent<BombSelfDestroyer>().GetLifeTime(lifeTime);
 
-            _counter.ChangedCount();
-
-            BombCreated?.Invoke();
+            _counter.IncriminateCount();
 
             if (_destroyerQueue.Count > 0)
             {

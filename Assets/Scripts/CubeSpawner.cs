@@ -1,35 +1,36 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(LifeTimeRandomizer), typeof(LifeTimeRandomizer), typeof(ColorRandomizer))]
-[RequireComponent (typeof(ObjectPool<>), typeof(CubeCounter))]
-public class CubeSpawner : MonoBehaviour
+[RequireComponent(typeof(LifeTimeRandomizer), typeof(ColorRandomizer))]
+public class CubeSpawner : ObjectPool<Cube>
 {
     [SerializeField] private Floor _floor;
     [SerializeField] private float _offsetY;
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private float _timeBetweenCreation;
     [SerializeField] private BombSpawner _bombSpawner;
+    [SerializeField] private CubeTotalCounter _counter;
 
     private Coroutine _createNewCubeCoroutine;
     private ColorRandomizer _colorRandomizer;
     private LifeTimeRandomizer _lifeTimeRandomizer;
-    private CubePool _cubePool;
-    private CubeCounter _cubeCounter;
-        
+
     private void Start()
     {
         _colorRandomizer = GetComponent<ColorRandomizer>();
         _lifeTimeRandomizer = GetComponent<LifeTimeRandomizer>();
-        _cubeCounter = GetComponent<CubeCounter>();
-        _cubePool = GetComponent<CubePool>();
+
+        InitializePool(_cubePrefab);
 
         _createNewCubeCoroutine = StartCoroutine(TurnCubeOn());
     }
 
     private void OnDisable()
     {
-        StopCoroutine(_createNewCubeCoroutine);
+        if (_createNewCubeCoroutine != null)
+        {
+            StopCoroutine(_createNewCubeCoroutine);
+        }
     }
 
     private Vector3 GetSpawnPosition()
@@ -62,9 +63,9 @@ public class CubeSpawner : MonoBehaviour
 
             yield return new WaitForSeconds(_timeBetweenCreation);
 
-            if (_cubePool.RetrieveObject() != null)
+            if (RetrieveObject() != null)
             {
-                Cube newCube = _cubePool.RetrieveObject();
+                Cube newCube = RetrieveObject();
                 newCube.transform.position = GetSpawnPosition();
                 newCube.transform.rotation = CubeRotation();
                 newCube.gameObject.SetActive(true);
@@ -72,8 +73,7 @@ public class CubeSpawner : MonoBehaviour
                 newCube.GetComponent<ColorChanger>().SetNewColor(color);
                 newCube.GetComponent<CubeSelfDestroyer>().SetLifeTime(lifeTime);
 
-                _cubeCounter.ChangedCount();
-
+                _counter.IncriminateCount();
                 _bombSpawner.GetEvent(newCube.GetComponent<CubeSelfDestroyer>());
             }
         }

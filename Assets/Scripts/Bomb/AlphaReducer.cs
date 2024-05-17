@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
-public class AlphaChanger : MonoBehaviour
+public class AlphaReducer : MonoBehaviour
 {
     private MeshRenderer _renderer;
 
@@ -11,7 +11,7 @@ public class AlphaChanger : MonoBehaviour
         _renderer = GetComponent<MeshRenderer>();          
     }
 
-    public void ChangeAlpha(float lifeTime)
+    public void ReduceAlpha(float lifeTime)
     {
         float minAlphaValue = 0.0f;
 

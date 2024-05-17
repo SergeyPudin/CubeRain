@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class Counter: MonoBehaviour
+public abstract class TotalCounter: MonoBehaviour
 {
     protected int _count;
 
@@ -12,7 +12,7 @@ public abstract class Counter: MonoBehaviour
         Reset();
     }
 
-    public void ChangedCount()
+    public void IncriminateCount()
     {
         _count++;
         ValueChanged?.Invoke(_count);

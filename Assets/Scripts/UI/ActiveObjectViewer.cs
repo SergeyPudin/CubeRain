@@ -8,11 +8,11 @@ public class ActiveObjectViewer : MonoBehaviour
 
     [SerializeField] private TMP_Text _cubeText;
     [SerializeField] private TMP_Text _bombText;
-
+    
     private void OnEnable()
     {
         _cubePool.QuantityActivObjectsChanged += ShowValue<Cube>;
-        _bombPool.QuantityActivObjectsChanged += ShowValue<Bomb>;
+        _bombPool.QuantityActivObjectsChanged += ShowValue<Bomb>; 
     }
 
     private void OnDisable()
@@ -21,12 +21,11 @@ public class ActiveObjectViewer : MonoBehaviour
         _bombPool.QuantityActivObjectsChanged -= ShowValue<Bomb>;
     }
 
-
-    private void ShowValue<T>(int quantity) where T : MonoBehaviour
+    private void ShowValue<T>(int quantityMonoBehavior) where T : MonoBehaviour
     {
         if (typeof(T) == typeof(Cube))
-            _cubeText.text = quantity.ToString();
+            _cubeText.text = quantityMonoBehavior.ToString();
         else if (typeof(T) == typeof(Bomb))
-            _bombText.text = quantity.ToString();
+            _bombText.text = quantityMonoBehavior.ToString();
     }
 }

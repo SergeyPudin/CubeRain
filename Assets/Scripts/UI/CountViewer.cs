@@ -4,7 +4,7 @@ using UnityEngine;
 public class CountViewer : MonoBehaviour
 {
     [SerializeField] private TMP_Text _text;
-    [SerializeField] private Counter _counter;
+    [SerializeField] private TotalCounter _counter;
 
     private void OnEnable()
     {

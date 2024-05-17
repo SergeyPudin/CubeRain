@@ -3,22 +3,19 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
+public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
 {
-    [SerializeField] private T _prefab;
-    [SerializeField] private int _objectsQuantity;
+    [SerializeField] private int _poolSize = 25;
     [SerializeField] private Transform _parent;
 
-    private int _quantityActiveObjects;
     private List<T> _pool;
+    private int _quantityActiveObjects;
 
     public event UnityAction<int> QuantityActivObjectsChanged;
 
-    private void Start()
+    private void Awake()
     {
         _pool = new List<T>();
-
-        Initialize();
         ResetActiveObjectsQuantity();
     }
 
@@ -33,16 +30,16 @@ public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
 
     public T RetrieveObject()
     {
-        T item = _pool.FirstOrDefault(p => p.gameObject.activeSelf == false);
+        T monoBehaviorItem = _pool.FirstOrDefault(p => p.gameObject.activeSelf == false);
 
-        return item;
+        return monoBehaviorItem;
     }
 
-    private void Initialize()
+    protected void InitializePool(T objectPrefab)
     {
-        for (int i = 0; i < _objectsQuantity; i++)
+        for (int i = 0; i < _poolSize; i++)
         {
-            T newObject = Instantiate(_prefab, transform.position, Quaternion.identity, _parent);
+            T newObject = Instantiate(objectPrefab, transform.position, Quaternion.identity, _parent);
             newObject.gameObject.SetActive(false);
             _pool.Add(newObject);
         }
