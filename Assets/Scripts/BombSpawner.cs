@@ -23,9 +23,8 @@ public class BombSpawner : ObjectPool<Bomb>
 
     private void CreateBomb(Vector3 position, float lifeTime)
     {
-        if (RetrieveObject() != null)
+        if (RetrieveObjectMonoBehavior(out Bomb bomb))
         {
-            Bomb bomb = RetrieveObject();
             bomb.transform.position = position;
             bomb.gameObject.SetActive(true);
             bomb.gameObject.GetComponent<BombSelfDestroyer>().GetLifeTime(lifeTime);

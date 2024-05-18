@@ -28,20 +28,23 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    public T RetrieveObject()
+    public bool RetrieveObjectMonoBehavior(out T objectMonoBehavior) 
     {
-        T monoBehaviorItem = _pool.FirstOrDefault(p => p.gameObject.activeSelf == false);
+        objectMonoBehavior = _pool.FirstOrDefault(p => p.gameObject.activeSelf == false);
 
-        return monoBehaviorItem;
+        if (objectMonoBehavior != null)
+            return true;
+
+        return false;
     }
 
-    protected void InitializePool(T objectPrefab)
+    protected void InitializePool(T objectPrefabMonoBehavior)
     {
         for (int i = 0; i < _poolSize; i++)
         {
-            T newObject = Instantiate(objectPrefab, transform.position, Quaternion.identity, _parent);
-            newObject.gameObject.SetActive(false);
-            _pool.Add(newObject);
+            T newObjectMonoBehavior = Instantiate(objectPrefabMonoBehavior, transform.position, Quaternion.identity, _parent);
+            newObjectMonoBehavior.gameObject.SetActive(false);
+            _pool.Add(newObjectMonoBehavior);
         }
     }
 
@@ -49,9 +52,9 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
     {
         int quantity = 0;
 
-        foreach (T item in _pool)
+        foreach (T itemMonoBehavior in _pool)
         {
-            if (item.gameObject.activeSelf == true)
+            if (itemMonoBehavior.gameObject.activeSelf == true)
                 quantity++;
         }
 

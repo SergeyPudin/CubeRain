@@ -63,9 +63,8 @@ public class CubeSpawner : ObjectPool<Cube>
 
             yield return new WaitForSeconds(_timeBetweenCreation);
 
-            if (RetrieveObject() != null)
-            {
-                Cube newCube = RetrieveObject();
+            if (RetrieveObjectMonoBehavior(out Cube newCube))
+            {               
                 newCube.transform.position = GetSpawnPosition();
                 newCube.transform.rotation = CubeRotation();
                 newCube.gameObject.SetActive(true);

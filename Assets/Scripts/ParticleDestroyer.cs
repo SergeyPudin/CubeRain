@@ -6,11 +6,10 @@ public class ParticleDestroyer : MonoBehaviour
     [SerializeField] private float _effectLifetime = 1;
 
     private ParticleSystem _particleSystem;
-    private Coroutine _selfDestructCoroutine;
 
     private void Start()
     {
-        _selfDestructCoroutine = StartCoroutine(SelfDestruct());
+        StartCoroutine(SelfDestruct());
         _particleSystem = GetComponent<ParticleSystem>();
         _particleSystem.Play();
     }
@@ -22,7 +21,5 @@ public class ParticleDestroyer : MonoBehaviour
         yield return waitForSeconds;
 
         Destroy(gameObject);
-
-        StopCoroutine(_selfDestructCoroutine);
     }
 }

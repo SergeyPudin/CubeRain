@@ -9,7 +9,6 @@ public class BombSelfDestroyer : MonoBehaviour
     [SerializeField] private ParticleSystem _fXPrefab;
 
     private AlphaReducer _alphaReducer;
-    private Coroutine _dieCoroutine;
 
     private void Awake()
     {
@@ -19,7 +18,7 @@ public class BombSelfDestroyer : MonoBehaviour
     public void GetLifeTime(float lifeTime)
     {
         _alphaReducer.ReduceAlpha(lifeTime);
-        _dieCoroutine = StartCoroutine(Die(lifeTime));
+        StartCoroutine(Die(lifeTime));
     }
 
     private IEnumerator Die(float lifeTime)
@@ -32,8 +31,6 @@ public class BombSelfDestroyer : MonoBehaviour
         _alphaReducer.ResetAlpha();
 
         Explode();
-
-        StopCoroutine(_dieCoroutine);
     }
 
     private void Explode()
